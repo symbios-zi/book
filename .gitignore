@@ -2,3 +2,4 @@ vendor
 .idea
 dumps/*
 logs/*
+.docker/mysql/data/

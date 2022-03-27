@@ -14,7 +14,6 @@ services:
       - book
     depends_on:
       - book-mysql
-      - book-redis
       - book-nginx
 
   book-mysql:
@@ -29,9 +28,9 @@ services:
     ports:
     - '3306:3306'
     volumes:
-      - ./db/mysql:/var/lib/mysql
+      - ./.docker/mysql/data:/var/lib/mysql
       - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
-      - ./db/mysql-files:/var/lib/mysql-files
+      - ./.docker/mysql-files:/var/lib/mysql-files
     networks:
       - book
 
