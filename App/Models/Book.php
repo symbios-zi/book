@@ -40,5 +40,10 @@ class Book extends Model
         return $stmt->fetchAll();
     }
 
+    public function add(array $attributes)
+    {
+        //@TODO Добавлнение в базу новой книги
+    }
+
 
 }
