@@ -2,7 +2,7 @@
 namespace App;
 require_once __DIR__ . '/vendor/autoload.php';
 use App\bd\bd;
-use App\entities\book;
+use App\Entities\book;
 $dbO = new BD();
 session_start();
 if (isset($_REQUEST['doGo'])) {

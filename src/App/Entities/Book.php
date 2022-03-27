@@ -1,5 +1,5 @@
 <?php
-namespace App\entities;
+namespace App\Entities;
 use PDO;
 class book extends PDO{
     protected $dbO;
