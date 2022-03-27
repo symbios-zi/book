@@ -9,6 +9,8 @@ namespace App\Models;
 class Author extends Model
 {
 
+    private $table = "authors";
+
     public function getTop100()
     {
         

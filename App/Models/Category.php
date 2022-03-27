@@ -8,4 +8,7 @@ namespace App\Models;
 class Category extends Model
 {
 
+    private $table = "categories";
+
+
 }

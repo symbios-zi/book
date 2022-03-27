@@ -8,5 +8,6 @@ namespace App\Models;
  */
 class CD extends Model
 {
+    private $table = "disks";
 
 }
