@@ -11,10 +11,7 @@ class BookController extends BaseController
     {
         $books = (new Book())->all();
 
-        dd($books);
-
-        // @TODO реализуем простой шаблонизатор, с передачей данных
-        $this->render('books/list.php', compact('books'));
+        return $this->render('books/list.php', compact('books'));
     }
 
     public function add()
