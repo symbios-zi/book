@@ -35,6 +35,12 @@ GET /categories/statitstics - вывод списка категорий и ко
 
 
 ### Окружение
+
+Используем простую сборку докера. 
+
+
 - Запустить в консоли из корневой папке ```docker-compose up -d```
 - Настроить подключение к бд _(host: 127.0.0.1, db_name: book, login: book_login, password: book_password)_
-- 
+- Залить дамп готовой базы
+
+Для доступа к консоли приложения выполняем ```docker-compose exec book-php bash```
