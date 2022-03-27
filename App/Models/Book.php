@@ -11,7 +11,7 @@ class Book extends Model
     private $table = "books";
 
 
-    public function getAll()
+    public function all()
     {
         $sql = "SELECT * FROM {$this->table}";
 
