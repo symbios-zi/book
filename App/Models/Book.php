@@ -8,10 +8,10 @@ namespace App\Models;
  */
 class Book extends Model
 {
-    private $table = "books";
+    private string $table = "books";
 
 
-    public function all()
+    public function all(): array
     {
         $sql = "SELECT * FROM {$this->table}";
 
@@ -20,7 +20,7 @@ class Book extends Model
         return $stmt->fetchAll();
     }
 
-    public function search($name)
+    public function search($name): array
     {
         $sql = "SELECT * FROM {$this->table} WHERE name like %:name%";
 
@@ -30,7 +30,7 @@ class Book extends Model
         return $stmt->fetchAll();
     }
 
-    public function byYear($from, $to)
+    public function byYear($from, $to): array
     {
         $sql = "SELECT * FROM {$this->table} WHERE year >= :from and year <= :to";
 

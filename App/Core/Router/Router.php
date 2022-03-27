@@ -48,6 +48,8 @@ class Router
             "uri" => $uri
         ];
 
+
+
         // Ищем этот роут среди списка наших
         $route = array_filter($this->routes, function(array $route) use ($needleRoute) {
             return
@@ -55,17 +57,22 @@ class Router
                 $needleRoute["uri"] === $route["uri"];
         });
 
+        $route = reset($route);
+
         // @TODO если роут не найден, вернуть ответ 404
 
         // Извлекаем класс контроллера для этого роута и его action
-        [$controller, $action] = explode("@", $route[0]["action"]);
+        [$controller, $action] = explode("@", $route["action"]);
 
 
         // создаем экземпляр контроллера
         $controllerInstance = new('App\Controllers\\' . $controller);
 
+
+
         // вызываем action (метод) из контроллера.
         $controllerInstance->$action();
+
 
         /*
         * Пример. BookController@list будет выполнен как
