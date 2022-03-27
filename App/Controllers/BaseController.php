@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-abstract class Controller
+abstract class BaseController
 {
     public function render(string $template, array $data)
     {

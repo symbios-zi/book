@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class AuthorController
+class AuthorController extends BaseController
 {
 
 }

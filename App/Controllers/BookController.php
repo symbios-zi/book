@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Book;
 
-class BookController extends Controller
+class BookController extends BaseController
 {
 
     public function list()
