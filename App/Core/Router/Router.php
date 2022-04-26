@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Core\Router;
 
-use ReflectionClass;
+use App\Core\Request;
 
 class Router
 {
@@ -32,57 +34,51 @@ class Router
         ]
     ];
 
-
     public function route()
     {
-        //  извлекаем нужные данные запроса из глобальной переменной $_SERVER
-        [
-            "REQUEST_METHOD" => $method,
-            "REQUEST_URI" => $uri,
-            "QUERY_STRING" => $query,
-        ] = $this->serverArgs;
+        $request = new Request(
+            $this->serverArgs["REQUEST_METHOD"],
+            $this->serverArgs["REQUEST_URI"],
+            $this->serverArgs["QUERY_STRING"],
+        );
 
-        // Запрашиваемый роут и метод
-        $needleRoute = [
-            "method" => $method,
-            "uri" => $uri
-        ];
+        $route = $this->getRoute($request);
 
-
-
-        // Ищем этот роут среди списка наших
-        $route = array_filter($this->routes, function(array $route) use ($needleRoute) {
-            return
-                $needleRoute["method"] === $route["method"] &&
-                $needleRoute["uri"] === $route["uri"];
-        });
+        if (empty($route)) {
+            $this->abort();
+        }
 
         $route = reset($route);
 
-        // @TODO если роут не найден, вернуть ответ 404
-
-        // Извлекаем класс контроллера для этого роута и его action
         [$controller, $action] = explode("@", $route["action"]);
 
-
-        // создаем экземпляр контроллера
-        $controllerInstance = new('App\Controllers\\' . $controller);
+        $fullControllerName = 'App\Controllers\\' . $controller;
 
 
+
+        $controllerInstance = new($fullControllerName);
+
+        if (method_exists($controllerInstance, $action)) {
+            $controllerInstance->$action($request);
+        }
+
+        $this->abort();
 
         // вызываем action (метод) из контроллера.
-        $controllerInstance->$action();
+    }
 
+    private function getRoute(Request $request): array
+    {
+        return array_filter($this->routes, function (array $route) use ($request) {
+            return
+                $request->method === $route["method"] &&
+                $request->uri === $route["uri"];
+        });
+    }
 
-        /*
-        * Пример. BookController@list будет выполнен как
-        *  $controller = new BookController();
-        *  $controller->list();
-        */
-
-
-
-        // Если идет обращение к адресу, которого нет в списке наших, мы обязаны выдать ошибку 404
-
+    private function abort(int $code = 404): void
+    {
+        http_response_code($code);
+        die;
     }
 }
