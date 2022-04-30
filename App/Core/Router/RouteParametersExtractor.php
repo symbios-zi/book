@@ -2,7 +2,7 @@
 
 namespace App\Core\Router;
 
-use App\Core\Request;
+use App\Core\Http\Request;
 
 class RouteParametersExtractor
 {

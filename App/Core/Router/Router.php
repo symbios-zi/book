@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Router;
 
-use App\Core\Request;
+use App\Core\Http\Request;
 
 final class Router
 {
