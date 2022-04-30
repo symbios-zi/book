@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Core\View;
 
-class View
+final class View
 {
-    function render($template, $data)
+
+    private string $name;
+    private array $data;
+
+    public function render(): string
     {
+        $template = $_SERVER['DOCUMENT_ROOT'] ."/App/Views/" . $this->name . ".php";
 
         if (!is_file($template)) {
             throw new \RuntimeException('Template not found: ' . $template);
@@ -25,6 +32,17 @@ class View
         };
 
         // call the closure
-        echo $result($template, $data);
+        echo $result($template, $this->data);
     }
+
+    public function withName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function withData(array $data): void
+    {
+        $this->data = $data;
+    }
+    
 }

@@ -10,6 +10,9 @@ use Psr\Http\Message\StreamInterface;
 abstract class Response implements ResponseInterface
 {
 
+    private StreamInterface $body;
+
+
     public function getProtocolVersion()
     {
         // TODO: Implement getProtocolVersion() method.
@@ -55,14 +58,14 @@ abstract class Response implements ResponseInterface
         // TODO: Implement withoutHeader() method.
     }
 
-    public function getBody()
+    public function getBody(): StreamInterface
     {
-        // TODO: Implement getBody() method.
+        return $this->body;
     }
 
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): void
     {
-        // TODO: Implement withBody() method.
+        $this->body = $body;
     }
 
     public function getStatusCode()

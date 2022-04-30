@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Router;
 
 use App\Core\Http\Request;
+use Psr\Http\Message\ResponseInterface;
 
 final class Router
 {
@@ -46,7 +47,7 @@ final class Router
         ]
     ];
 
-    public function route(): void
+    public function route(): ResponseInterface
     {
         // Создаем реквест, в который из сервера вкладываем данные.
         $request = new Request(
@@ -59,6 +60,8 @@ final class Router
         // /books/{id} = /books/12
         $route = $this->getRoute($request)[0];
 
+
+
         if (empty($route)) {
             $this->abort(404);
         }
@@ -69,11 +72,7 @@ final class Router
         $this->appendRouteParametersToRequest($request, $route);
 
         // Запускаем из найденного нами роута его контроллер и action, передавая туда наш Request
-        $this->runAction($request, $route);
-
-
-        // если ни один контроллер не сработал, вернем 404 ошибку. Адреса не существует
-        $this->abort(404);
+        return $this->runAction($request, $route);
     }
 
     private function getRoute(Request $request): array
@@ -92,13 +91,15 @@ final class Router
     }
 
 
-    private function runAction(Request $request, array $route): void
+    private function runAction(Request $request, array $route): ResponseInterface
     {
         [$controller, $action] = ControllerFactory::build($route);
 
-        if (method_exists($controller, $action)) {
-            $controller->$action($request);
+        if ( ! method_exists($controller, $action)) {
+            $this->abort(404);
         }
+
+        return $controller->$action($request);
     }
 
     private function abort(int $code): void

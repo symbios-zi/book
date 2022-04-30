@@ -21,5 +21,9 @@ use App\Core\Router\Router;
  */
 $router = new Router();
 
-$router->route();
+$response = $router->route();
+
+dd($response);
+
+// dispatch response
 
