@@ -6,7 +6,7 @@ namespace App\Core\Router;
 
 use App\Core\Request;
 
-class Router
+final class Router
 {
 
     private array $serverArgs;
@@ -19,14 +19,32 @@ class Router
     private array $routes = [
         [
             "method" => "GET",
+            "uri" => "/books/{id}/list/{code}",
+            "action" => "BookController@show"
+        ],
+        [
+            "method" => "POST",
             "uri" => "/scan",
             "action" => "BookController@add"
         ],
+//        [
+//            "method" => "GET",
+//            "uri" => "/books",
+//            "action" => "BookController@list"
+//        ],
+
         [
-            "method" => "GET",
+            "method" => "POST",
             "uri" => "/books",
-            "action" => "BookController@list"
+            "action" => "BookController@store"
         ],
+        [
+            "method" => "DELETE",
+            "uri" => "/books/{id}",
+            "action" => "BookController@delete"
+        ],
+
+
         [
             "method" => "GET",
             "uri" => "/authors",
@@ -42,43 +60,46 @@ class Router
             $this->serverArgs["QUERY_STRING"],
         );
 
-        $route = $this->getRoute($request);
+        $route = $this->getRoute($request)[0];
 
         if (empty($route)) {
-            $this->abort();
+            $this->abort(404);
         }
 
-        $route = reset($route);
+        $this->appendRouteParametersToRequest($request, $route);
+        $this->runAction($request, $route);
 
-        [$controller, $action] = explode("@", $route["action"]);
-
-        $fullControllerName = 'App\Controllers\\' . $controller;
-
-
-
-        $controllerInstance = new($fullControllerName);
-
-        if (method_exists($controllerInstance, $action)) {
-            $controllerInstance->$action($request);
-        }
-
-        $this->abort();
-
-        // вызываем action (метод) из контроллера.
+        $this->abort(404);
     }
 
     private function getRoute(Request $request): array
     {
         return array_filter($this->routes, function (array $route) use ($request) {
-            return
-                $request->method === $route["method"] &&
-                $request->uri === $route["uri"];
+            $expression = (new Expression())->build($route["uri"]);
+
+            return $request->method === $route["method"] && preg_match($expression, $request->uri);
         });
     }
 
-    private function abort(int $code = 404): void
+    private function abort(int $code): void
     {
         http_response_code($code);
         die;
+    }
+
+    private function appendRouteParametersToRequest(Request $request, mixed $route): void
+    {
+        (new RouteParametersExtractor())->extract($request, $route);
+    }
+
+
+    private function runAction(Request $request, array $route): void
+    {
+        [$controller, $action] = ControllerFactory::build($route);
+
+
+        if (method_exists($controller, $action)) {
+            $controller->$action($request);
+        }
     }
 }

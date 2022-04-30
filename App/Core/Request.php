@@ -11,6 +11,8 @@ use Psr\Http\Message\UriInterface;
 
 class Request implements RequestInterface, ServerRequestInterface
 {
+    private array $attributes = [];
+
     public function __construct(
         public string $method,
         public string $uri,
@@ -149,9 +151,9 @@ class Request implements RequestInterface, ServerRequestInterface
         // TODO: Implement withParsedBody() method.
     }
 
-    public function getAttributes()
+    public function getAttributes(): array
     {
-        // TODO: Implement getAttributes() method.
+        return $this->attributes;
     }
 
     public function getAttribute($name, $default = null)
@@ -167,5 +169,10 @@ class Request implements RequestInterface, ServerRequestInterface
     public function withoutAttribute($name)
     {
         // TODO: Implement withoutAttribute() method.
+    }
+
+    public function setAttributes(array $attributes): void
+    {
+        $this->attributes = $attributes;
     }
 }
