@@ -3,14 +3,14 @@
 namespace App\Controllers;
 
 use App\Models\Book;
-use Psr\Http\Message\RequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface as Request;
 
 class BookController extends BaseController
 {
 
     public function show(Request $request)
     {
-        dd($request);
+        dd($request->getAttribute('code'));
     }
 
     public function list()

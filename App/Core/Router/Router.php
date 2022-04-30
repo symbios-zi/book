@@ -9,17 +9,11 @@ use App\Core\Request;
 final class Router
 {
 
-    private array $serverArgs;
-
-    public function __construct()
-    {
-         $this->serverArgs = $_SERVER;
-    }
-
+    // @TODO, перенести во внешний конфиг.
     private array $routes = [
         [
             "method" => "GET",
-            "uri" => "/books/{id}/list/{code}",
+            "uri" => "/books/{id}",
             "action" => "BookController@show"
         ],
         [
@@ -52,23 +46,33 @@ final class Router
         ]
     ];
 
-    public function route()
+    public function route(): void
     {
+        // Создаем реквест, в который из сервера вкладываем данные.
         $request = new Request(
-            $this->serverArgs["REQUEST_METHOD"],
-            $this->serverArgs["REQUEST_URI"],
-            $this->serverArgs["QUERY_STRING"],
+            $_SERVER["REQUEST_METHOD"],
+            $_SERVER["REQUEST_URI"],
+            $_SERVER["QUERY_STRING"],
         );
 
+        // ищем по регуляке нужный роут из списка
+        // /books/{id} = /books/12
         $route = $this->getRoute($request)[0];
 
         if (empty($route)) {
             $this->abort(404);
         }
 
+        // /books/{id} = /books/12
+        // извлекаем динамические параметры роута {id} - 12
+        // и добавляем уже к существующему Request
         $this->appendRouteParametersToRequest($request, $route);
+
+        // Запускаем из найденного нами роута его контроллер и action, передавая туда наш Request
         $this->runAction($request, $route);
 
+
+        // если ни один контроллер не сработал, вернем 404 ошибку. Адреса не существует
         $this->abort(404);
     }
 
@@ -81,11 +85,6 @@ final class Router
         });
     }
 
-    private function abort(int $code): void
-    {
-        http_response_code($code);
-        die;
-    }
 
     private function appendRouteParametersToRequest(Request $request, mixed $route): void
     {
@@ -97,9 +96,14 @@ final class Router
     {
         [$controller, $action] = ControllerFactory::build($route);
 
-
         if (method_exists($controller, $action)) {
             $controller->$action($request);
         }
+    }
+
+    private function abort(int $code): void
+    {
+        http_response_code($code);
+        die;
     }
 }
