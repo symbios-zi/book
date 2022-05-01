@@ -22,7 +22,7 @@ final class Router
     }
 
 
-    public function get()
+    /*public function get()
     {
 
     }
@@ -40,7 +40,7 @@ final class Router
     public function delete()
     {
 
-    }
+    }*/
 
     public function route(ContainerInterface $container): ResponseInterface
     {
