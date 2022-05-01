@@ -11,6 +11,8 @@ abstract class Response implements ResponseInterface
 {
 
     private StreamInterface $body;
+    private int $statusCode;
+    private string $reasonPhrase;
 
 
     public function getProtocolVersion()
@@ -63,19 +65,24 @@ abstract class Response implements ResponseInterface
         return $this->body;
     }
 
-    public function withBody(StreamInterface $body): void
+    public function withBody(StreamInterface $body): static
     {
         $this->body = $body;
+
+        return $this;
     }
 
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
-        // TODO: Implement getStatusCode() method.
+        return $this->statusCode;
     }
 
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus($code, $reasonPhrase = ''): static
     {
-        // TODO: Implement withStatus() method.
+        $this->statusCode = $code;
+        $this->reasonPhrase = $reasonPhrase;
+
+        return $this;
     }
 
     public function getReasonPhrase()

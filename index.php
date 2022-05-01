@@ -8,9 +8,8 @@
 
 // включаем автозагрузку классов. Нам не нужно указывать require в классах
 require_once './vendor/autoload.php';
+
 use App\Core\Router\Router;
-
-
 
 
 /**
@@ -23,7 +22,33 @@ $router = new Router();
 
 $response = $router->route();
 
-dd($response);
+// Step 1: Генерируем строку статуса.
+$statusLine = sprintf('HTTP/%s %s %s'
+    , $response->getProtocolVersion()
+    , $response->getStatusCode()
+    , $response->getReasonPhrase()
+);
+
+// Step 2: переопределяем хеадер, даже если он был.
+header($statusLine, TRUE);
+
+
+// Step 3: Устанавливаем кастомные хедеры
+if ($response->getHeaders()) {
+    foreach ($response->getHeaders() as $name => $values) {
+        $responseHeader = sprintf('%s: %s'
+            , $name
+            , $response->getHeaderLine($name)
+        );
+        header($responseHeader, FALSE); /* The header doesn't replace a previous similar header. */
+    }
+
+}
+
+// Step 4: Возвращаем ответ
+echo $response->getBody();
+
+exit();
 
 // dispatch response
 

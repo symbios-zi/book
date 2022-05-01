@@ -2,28 +2,30 @@
 
 namespace App\Controllers;
 
-use App\Core\Http\HTMLResponse;
+use App\Core\Http\HtmlResponse;
 use App\Core\View\View;
 use App\Models\Book;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class BookController extends BaseController
 {
 
-    public function show(Request $request)
+    /**
+     * @throws \Exception
+     */
+    public function show(Request $request): ResponseInterface
     {
         $books = (new Book())->all();
-        $template = (new View());
+        $render = (new View());
 
-        $template->withName("books/list");
-        $template->withData(['books' => $books]);
+        $render->withName("books/list");
+        $render->withData(['books' => $books]);
 
-        $response = new HTMLResponse();
-
-        $response->setData($template->render());
-
-        return $response;
+        return (new HtmlResponse())
+            ->withStatus(200)
+            ->withContent($render);
     }
 
     public function list(): Response
@@ -34,9 +36,9 @@ class BookController extends BaseController
         $template->withName("books/list");
         $template->withData(['books' => $books]);
 
-        $response = new HTMLResponse();
+        $response = new HtmlResponse();
 
-        $response->setData($template->render());
+        $response->withContent($template->render());
 
         return $response;
     }

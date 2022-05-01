@@ -10,7 +10,7 @@ final class View
     private string $name;
     private array $data;
 
-    public function render(): string
+    public function __invoke(): string
     {
         $template = $_SERVER['DOCUMENT_ROOT'] ."/App/Views/" . $this->name . ".php";
 
@@ -32,7 +32,7 @@ final class View
         };
 
         // call the closure
-        echo $result($template, $this->data);
+        return $result($template, $this->data);
     }
 
     public function withName(string $name): void
