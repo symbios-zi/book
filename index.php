@@ -25,10 +25,10 @@ $response = (new Router())
     ->route();
 
 // Step 1: Генерируем строку статуса.
-$statusLine = sprintf('HTTP/%s %s %s'
-    , $response->getProtocolVersion()
-    , $response->getStatusCode()
-    , $response->getReasonPhrase()
+$statusLine = sprintf('HTTP/%s %s %s',
+    $response->getProtocolVersion(),
+    $response->getStatusCode(),
+    $response->getReasonPhrase(),
 );
 
 // Step 2: переопределяем хеадер, даже если он был.
@@ -38,7 +38,13 @@ header($statusLine, TRUE);
 // Step 3: Устанавливаем кастомные хедеры
 if ($response->getHeaders()) {
     foreach ($response->getHeaders() as $name => $values) {
-        header(sprintf('%s: %s', $name, $response->getHeaderLine($name)), FALSE);
+        header(
+            sprintf('%s: %s',
+                $name,
+                $response->getHeaderLine($name)
+            ),
+            FALSE
+         );
     }
 }
 

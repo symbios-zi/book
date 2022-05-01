@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Infrastructure\Core\Router;
 
-use Infrastructure\Core\Http\Request;
-use Infrastructure\Core\Http\RequestFactory;
 use Psr\Http\Message\ResponseInterface;
+use Infrastructure\Core\Http\{Request, RequestFactory};
 
 final class Router
 {
 
-    /** @var Route[]  */
+    /** @var Route[] */
     private array $routes = [];
 
     public function withRoutes(array $routes): self
@@ -24,26 +23,24 @@ final class Router
 
     public function get()
     {
-        
+
     }
 
     public function post()
     {
-        
+
     }
 
     public function put()
     {
-        
+
     }
 
     public function delete()
     {
-        
-    }
-    
 
-    
+    }
+
     public function route(): ResponseInterface
     {
         $requestFactory = new RequestFactory();
@@ -55,11 +52,9 @@ final class Router
 
         // ищем по регуляке нужный роут из списка
         // /books/{id} = /books/12
-        $route = $this->getRoute($request)[0];
+        $route = $this->getRoute($request);
 
-
-
-        if (empty($route)) {
+        if (is_null($route)) {
             $this->abort(404);
         }
 
@@ -72,17 +67,18 @@ final class Router
         return $this->runAction($request, $route);
     }
 
-    private function getRoute(Request $request): array
+    private function getRoute(Request $request)
     {
-
-        return array_filter($this->routes, function (Route $route) use ($request) {
-
+        $route = current(array_filter($this->routes, function (Route $route) use ($request) {
             $expression = (new Expression())->build($route->pattern);
 
             return $request->method === $route->method && preg_match($expression, $request->uri);
-        });
-    }
+        }));
 
+        return is_object($route)
+            ? $route
+            : null;
+    }
 
     private function appendRouteParametersToRequest(Request $request, Route $route): void
     {
@@ -94,7 +90,7 @@ final class Router
     {
         [$controller, $action] = ControllerFactory::build($route);
 
-        if ( ! method_exists($controller, $action)) {
+        if (!method_exists($controller, $action)) {
             $this->abort(404);
         }
 
