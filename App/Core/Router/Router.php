@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Core\Router;
 
 use App\Core\Http\Request;
+use App\Core\Http\RequestFactory;
+use App\Core\Http\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 
 final class Router
@@ -49,18 +51,16 @@ final class Router
 
     public function route(): ResponseInterface
     {
-        // Создаем реквест, в который из сервера вкладываем данные.
-        $request = new Request(
+        $requestFactory = new RequestFactory();
+
+        $request = $requestFactory->createRequest(
             $_SERVER["REQUEST_METHOD"],
             $_SERVER["REQUEST_URI"],
-            $_SERVER["QUERY_STRING"],
         );
 
         // ищем по регуляке нужный роут из списка
         // /books/{id} = /books/12
         $route = $this->getRoute($request)[0];
-
-
 
         if (empty($route)) {
             $this->abort(404);

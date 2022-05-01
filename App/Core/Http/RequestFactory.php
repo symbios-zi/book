@@ -11,6 +11,11 @@ class RequestFactory implements RequestFactoryInterface
 
     public function createRequest(string $method, $uri): RequestInterface
     {
-        // TODO: Implement createRequest() method.
+
+        return new Request(
+            $method,
+            $uri,
+            $_SERVER["QUERY_STRING"],
+        );
     }
 }

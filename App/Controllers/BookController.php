@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controllers;
 
-use App\Core\Http\HtmlResponse;
-use App\Core\View\View;
+use Psr\Http\Message\{
+    ServerRequestInterface as Request,
+    ResponseInterface as Response,
+};
+
 use App\Models\Book;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Core\View\View;
+use App\Core\Http\HtmlResponseFactory;
 
 class BookController extends BaseController
 {
@@ -15,7 +19,7 @@ class BookController extends BaseController
     /**
      * @throws \Exception
      */
-    public function show(Request $request): ResponseInterface
+    public function show(Request $request): Response
     {
         $books = (new Book())->all();
         $render = (new View());
@@ -23,27 +27,28 @@ class BookController extends BaseController
         $render->withName("books/list");
         $render->withData(['books' => $books]);
 
-        return (new HtmlResponse())
-            ->withStatus(200)
-            ->withContent($render);
+        $responseFactory = new HtmlResponseFactory();
+        $response = $responseFactory->createResponse(200 );
+        return $response->withContent($render);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function list(): Response
     {
         $books = (new Book())->all();
-        $template = (new View());
+        $render = (new View());
 
-        $template->withName("books/list");
-        $template->withData(['books' => $books]);
+        $render->withName("books/list");
+        $render->withData(['books' => $books]);
 
-        $response = new HtmlResponse();
-
-        $response->withContent($template->render());
-
-        return $response;
+        $responseFactory = new HtmlResponseFactory();
+        $response = $responseFactory->createResponse(200 );
+        return $response->withContent($render);
     }
 
-    public function add()
+    public function add(): Response
     {
         $attributes = $_REQUEST;
 
