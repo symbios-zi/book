@@ -38,15 +38,14 @@ final class View
     public function withName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
     public function withData(array $data): self
     {
         $this->data = $data;
-
         return $this;
+
     }
     
 }

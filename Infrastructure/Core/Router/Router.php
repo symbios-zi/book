@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Infrastructure\Core\Router;
 
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Infrastructure\Core\Http\{Request, RequestFactory};
 
@@ -41,7 +42,7 @@ final class Router
 
     }
 
-    public function route(): ResponseInterface
+    public function route(ContainerInterface $container): ResponseInterface
     {
         $requestFactory = new RequestFactory();
 
@@ -64,7 +65,7 @@ final class Router
         $this->appendRouteParametersToRequest($request, $route);
 
         // Запускаем из найденного нами роута его контроллер и action, передавая туда наш Request
-        return $this->runAction($request, $route);
+        return $this->runAction($request, $route, $container);
     }
 
     private function getRoute(Request $request)
@@ -86,9 +87,9 @@ final class Router
     }
 
 
-    private function runAction(Request $request, Route $route): ResponseInterface
+    private function runAction(Request $request, Route $route, $container): ResponseInterface
     {
-        [$controller, $action] = ControllerFactory::build($route);
+        [$controller, $action] = ControllerFactory::build($route, $container);
 
         if (!method_exists($controller, $action)) {
             $this->abort(404);

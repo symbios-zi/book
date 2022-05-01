@@ -6,18 +6,25 @@ namespace Application\Controllers;
 
 use Application\Models\Book;
 
-use Psr\Http\Message\{
-    ServerRequestInterface as Request,
-    ResponseInterface as Response,
-};
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\{ResponseFactoryInterface, ServerRequestInterface as Request, ResponseInterface as Response};
 
 use Infrastructure\Core\{
     View\View,
-    Http\HtmlResponseFactory,
+    Http\HtmlResponseFactory
 };
 
 class BookController extends BaseController
 {
+    private View $view;
+    private ResponseFactoryInterface $htmlResponseFactory;
+
+    public function __construct(ContainerInterface $container)
+    {
+         $this->view = $container->get(View::class);
+         $this->htmlResponseFactory = $container->get(HtmlResponseFactory::class);
+    }
+
     /**
      * @throws \Exception
      */
@@ -29,7 +36,7 @@ class BookController extends BaseController
             ->withName("books/list")
             ->withData(['books' => $books]);
 
-        return (new HtmlResponseFactory())
+        return $this->htmlResponseFactory
             ->createResponse(200)
             ->withContent($render);
     }
@@ -41,11 +48,11 @@ class BookController extends BaseController
     {
         $books = (new Book())->all();
 
-        $render = (new View())
+        $render = $this->view
             ->withName("books/list")
             ->withData(['books' => $books]);
 
-        return (new HtmlResponseFactory())
+        return $this->htmlResponseFactory
             ->createResponse(200)
             ->withContent($render);
     }
