@@ -4,32 +4,34 @@ declare(strict_types=1);
 
 namespace Application\Controllers;
 
+use Application\Models\Book;
+
 use Psr\Http\Message\{
     ServerRequestInterface as Request,
     ResponseInterface as Response,
 };
 
-use Application\Models\Book;
-use Infrastructure\Core\View\View;
-use Infrastructure\Core\Http\HtmlResponseFactory;
+use Infrastructure\Core\{
+    View\View,
+    Http\HtmlResponseFactory,
+};
 
 class BookController extends BaseController
 {
-
     /**
      * @throws \Exception
      */
     public function show(Request $request): Response
     {
         $books = (new Book())->all();
-        $render = (new View());
 
-        $render->withName("books/list");
-        $render->withData(['books' => $books]);
+        $render = (new View())
+            ->withName("books/list")
+            ->withData(['books' => $books]);
 
-        $responseFactory = new HtmlResponseFactory();
-        $response = $responseFactory->createResponse(200 );
-        return $response->withContent($render);
+        return (new HtmlResponseFactory())
+            ->createResponse(200)
+            ->withContent($render);
     }
 
     /**
@@ -38,14 +40,14 @@ class BookController extends BaseController
     public function list(): Response
     {
         $books = (new Book())->all();
-        $render = (new View());
 
-        $render->withName("books/list");
-        $render->withData(['books' => $books]);
+        $render = (new View())
+            ->withName("books/list")
+            ->withData(['books' => $books]);
 
-        $responseFactory = new HtmlResponseFactory();
-        $response = $responseFactory->createResponse(200 );
-        return $response->withContent($render);
+        return (new HtmlResponseFactory())
+            ->createResponse(200)
+            ->withContent($render);
     }
 
     public function add(): Response
@@ -54,5 +56,4 @@ class BookController extends BaseController
 
         (new Book())->add($attributes);
     }
-
 }

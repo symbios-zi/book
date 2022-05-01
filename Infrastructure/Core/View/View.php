@@ -35,14 +35,18 @@ final class View
         return $result($template, $this->data);
     }
 
-    public function withName(string $name): void
+    public function withName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
     }
 
-    public function withData(array $data): void
+    public function withData(array $data): self
     {
         $this->data = $data;
+
+        return $this;
     }
     
 }
