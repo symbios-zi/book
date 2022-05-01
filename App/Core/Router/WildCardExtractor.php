@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Router;
 
-class WildCardExtractor
+final class WildCardExtractor
 {
 
     public function get(string $uri): array|null
