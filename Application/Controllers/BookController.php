@@ -7,17 +7,21 @@ namespace Application\Controllers;
 use Application\Models\Book;
 
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\{ResponseFactoryInterface, ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\{
+    ResponseFactoryInterface as ResponseFactory,
+    ServerRequestInterface as Request,
+    ResponseInterface as Response,
+};
 
 use Infrastructure\Core\{
     View\View,
-    Http\HtmlResponseFactory
+    Http\HtmlResponseFactory,
 };
 
 class BookController extends BaseController
 {
     private View $view;
-    private ResponseFactoryInterface $htmlResponseFactory;
+    private ResponseFactory $htmlResponseFactory;
 
     public function __construct(ContainerInterface $container)
     {
