@@ -8,11 +8,11 @@ use Infrastructure\Core\Http\Request;
 
 class RouteParametersExtractor
 {
-    public function extract(Request $request, array $route): void
+    public function extract(Request $request, Route $route): void
     {
-        $routeWildCards = (new WildCardExtractor())->get($route["uri"]);
+        $routeWildCards = (new WildCardExtractor())->get($route->pattern);
 
-        $expression = (new Expression())->build($route["uri"]);
+        $expression = (new Expression())->build($route->pattern);
         preg_match_all($expression, $request->uri, $routeParams, PREG_SET_ORDER);
 
         $matchedParams = $routeParams[0];

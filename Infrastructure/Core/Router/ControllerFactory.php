@@ -7,9 +7,9 @@ namespace Infrastructure\Core\Router;
 final class ControllerFactory
 {
 
-    public static function build($route): array
+    public static function build(Route $route): array
     {
-        [$controller, $action] = explode("@", $route["action"]);
+        [$controller, $action] = explode("@", $route->handler);
         $fullControllerName = 'Application\Controllers\\' . $controller;
         $controllerInstance = new($fullControllerName);
 

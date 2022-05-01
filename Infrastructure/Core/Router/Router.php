@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 final class Router
 {
 
+    /** @var Route[]  */
     private array $routes = [];
 
     public function withRoutes(array $routes): self
@@ -20,6 +21,29 @@ final class Router
         return $this;
     }
 
+
+    public function get()
+    {
+        
+    }
+
+    public function post()
+    {
+        
+    }
+
+    public function put()
+    {
+        
+    }
+
+    public function delete()
+    {
+        
+    }
+    
+
+    
     public function route(): ResponseInterface
     {
         $requestFactory = new RequestFactory();
@@ -32,6 +56,7 @@ final class Router
         // ищем по регуляке нужный роут из списка
         // /books/{id} = /books/12
         $route = $this->getRoute($request)[0];
+
 
 
         if (empty($route)) {
@@ -50,22 +75,22 @@ final class Router
     private function getRoute(Request $request): array
     {
 
-        return array_filter($this->routes, function (array $route) use ($request) {
+        return array_filter($this->routes, function (Route $route) use ($request) {
 
-            $expression = (new Expression())->build($route["uri"]);
+            $expression = (new Expression())->build($route->pattern);
 
-            return $request->method === $route["method"] && preg_match($expression, $request->uri);
+            return $request->method === $route->method && preg_match($expression, $request->uri);
         });
     }
 
 
-    private function appendRouteParametersToRequest(Request $request, mixed $route): void
+    private function appendRouteParametersToRequest(Request $request, Route $route): void
     {
         (new RouteParametersExtractor())->extract($request, $route);
     }
 
 
-    private function runAction(Request $request, array $route): ResponseInterface
+    private function runAction(Request $request, Route $route): ResponseInterface
     {
         [$controller, $action] = ControllerFactory::build($route);
 
