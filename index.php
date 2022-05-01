@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
+
+use Infrastructure\Core\Router\Router;
 
 /**
  * Это входная точка приложения, какой бы относительный путь не выбрал, все равно попадем сюда.
@@ -9,9 +12,6 @@
 // включаем автозагрузку классов. Нам не нужно указывать require в классах
 require_once './vendor/autoload.php';
 
-use Infrastructure\Core\Router\Router;
-
-
 /**
  * Мы создали небольшой роутер, который будет маршрутизировать все запросы на нужные контроллеры.
  *  - Для книг адрес books.local/books
@@ -19,6 +19,7 @@ use Infrastructure\Core\Router\Router;
  *  - Для создания нового роута: добавляем в роутере новый роут и создаем для него контроллер и экшен.
  */
 
+// Step 0:  Создаем роутер
 $response = (new Router())
     ->withRoutes(include 'Application/Config/routes/web.php')
     ->route();
@@ -37,19 +38,12 @@ header($statusLine, TRUE);
 // Step 3: Устанавливаем кастомные хедеры
 if ($response->getHeaders()) {
     foreach ($response->getHeaders() as $name => $values) {
-        $responseHeader = sprintf('%s: %s'
-            , $name
-            , $response->getHeaderLine($name)
-        );
-        header($responseHeader, FALSE); /* The header doesn't replace a previous similar header. */
+        header(sprintf('%s: %s', $name, $response->getHeaderLine($name)), FALSE);
     }
-
 }
 
 // Step 4: Возвращаем ответ
 echo $response->getBody();
 
 exit();
-
-// dispatch response
 
