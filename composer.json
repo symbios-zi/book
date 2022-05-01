@@ -1,10 +1,11 @@
 {
   "autoload":{
     "files": [
-      "App/Core/Support/helpers.php"
+      "Infrastructure/Core/Support/helpers.php"
     ],
     "psr-4":{
-      "App\\" : "App"
+      "Application\\" : "Application",
+      "Infrastructure\\" : "Infrastructure"
     }
   },
   "require": {

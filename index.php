@@ -9,7 +9,7 @@
 // включаем автозагрузку классов. Нам не нужно указывать require в классах
 require_once './vendor/autoload.php';
 
-use App\Core\Router\Router;
+use Infrastructure\Core\Router\Router;
 
 
 /**

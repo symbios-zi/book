@@ -1,5 +1,5 @@
 vendor
 .idea
-dumps/*
-logs/*
+Storage/dumps/*
+Storage/logs/*
 .docker/mysql/data/
