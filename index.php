@@ -18,9 +18,10 @@ use Infrastructure\Core\Router\Router;
  *  - Для авторов адрес books.local/authors
  *  - Для создания нового роута: добавляем в роутере новый роут и создаем для него контроллер и экшен.
  */
-$router = new Router();
 
-$response = $router->route();
+$response = (new Router())
+    ->withRoutes(include 'Application/Config/routes/web.php')
+    ->route();
 
 // Step 1: Генерируем строку статуса.
 $statusLine = sprintf('HTTP/%s %s %s'

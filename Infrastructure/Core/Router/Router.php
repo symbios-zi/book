@@ -11,42 +11,14 @@ use Psr\Http\Message\ResponseInterface;
 final class Router
 {
 
-    // @TODO, перенести во внешний конфиг.
-    private array $routes = [
-        [
-            "method" => "GET",
-            "uri" => "/books/{id}",
-            "action" => "BookController@show"
-        ],
-        [
-            "method" => "POST",
-            "uri" => "/scan",
-            "action" => "BookController@add"
-        ],
-//        [
-//            "method" => "GET",
-//            "uri" => "/books",
-//            "action" => "BookController@list"
-//        ],
+    private array $routes = [];
 
-        [
-            "method" => "POST",
-            "uri" => "/books",
-            "action" => "BookController@store"
-        ],
-        [
-            "method" => "DELETE",
-            "uri" => "/books/{id}",
-            "action" => "BookController@delete"
-        ],
+    public function withRoutes(array $routes): self
+    {
+        $this->routes = $routes;
 
-
-        [
-            "method" => "GET",
-            "uri" => "/authors",
-            "action" => "AuthorController@list"
-        ]
-    ];
+        return $this;
+    }
 
     public function route(): ResponseInterface
     {
@@ -60,6 +32,7 @@ final class Router
         // ищем по регуляке нужный роут из списка
         // /books/{id} = /books/12
         $route = $this->getRoute($request)[0];
+
 
         if (empty($route)) {
             $this->abort(404);
@@ -76,7 +49,9 @@ final class Router
 
     private function getRoute(Request $request): array
     {
+
         return array_filter($this->routes, function (array $route) use ($request) {
+
             $expression = (new Expression())->build($route["uri"]);
 
             return $request->method === $route["method"] && preg_match($expression, $request->uri);
