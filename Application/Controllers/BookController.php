@@ -34,11 +34,15 @@ class BookController extends BaseController
      */
     public function show(Request $request): Response
     {
-        $books = (new Book())->all();
+        $repository = new Book\MysqlBookRepository();
+
+        $book = $repository->getById($request->getAttribute('id'));
+
+        dd($book);
 
         $render = (new View())
-            ->withName("books/list")
-            ->withData(['books' => $books]);
+            ->withName("books/show")
+            ->withData(['book' => $book]);
 
         return $this->htmlResponseFactory
             ->createResponse(200)

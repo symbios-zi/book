@@ -8,6 +8,18 @@ namespace Infrastructure\Core\Attribute;
 abstract class AttributeReader implements ReaderInterface
 {
 
+    protected function assertClassExists(string $class, \Reflector $context): void
+    {
+        if (!\class_exists($class)) {
+            $message = \vsprintf('The metadata class "%s" in %s was not found', [
+                $class,
+                $context,
+            ]);
+
+            throw new SemanticAttributeException($message);
+        }
+    }
+
     public function getClassMetadata(\ReflectionClass $class, string $name = null): iterable
     {
        return $this->getClassAttributes($class, $name);
