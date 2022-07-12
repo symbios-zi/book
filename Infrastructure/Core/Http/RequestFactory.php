@@ -13,8 +13,8 @@ class RequestFactory implements RequestFactoryInterface
     {
 
         return new Request(
-            $method,
-            $uri,
+            $_SERVER["REQUEST_METHOD"],
+            $_SERVER["REQUEST_URI"],
             $_SERVER["QUERY_STRING"],
         );
     }
